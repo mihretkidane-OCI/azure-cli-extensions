@@ -5,20 +5,20 @@
 import inspect
 import unittest
 
-from azext_oracle_database.aaz.latest.oracle_database.exadb_vm_cluster._update import Update
+from azext_oracle_database.aaz.latest.oracle_database.resource_anchor._update import Update
 
 
-class OracleDatabaseExadbVmClusterModelTests(unittest.TestCase):
+class OracleDatabaseResourceAnchorModelTests(unittest.TestCase):
 
     def test_update_uses_stable_api_version(self):
         self.assertEqual("2026-06-01", Update._aaz_info["version"])
         self.assertEqual("2026-06-01", Update._aaz_info["resources"][0][-1])
 
-    def test_update_keeps_cluster_capacity_options(self):
+    def test_update_keeps_required_name_and_tags(self):
         arguments = Update._build_arguments_schema()
-        self.assertTrue(arguments.exadb_vm_cluster_name._required)
-        self.assertEqual(["--node-count"], arguments.node_count._options)
-        self.assertEqual(["--zones"], arguments.zones._options)
-        operation = Update.ExadbVmClustersCreateOrUpdate
+        self.assertTrue(arguments.resource_anchor_name._required)
+        self.assertEqual(["-n", "--name", "--resource-anchor-name"], arguments.resource_anchor_name._options)
+        self.assertEqual(["--tags"], arguments.tags._options)
+        operation = Update.ResourceAnchorsCreateOrUpdate
         self.assertEqual("PUT", operation.method.fget(None))
-        self.assertIn("exadbVmClusters/{exadbVmClusterName}", inspect.getsource(operation.url.fget))
+        self.assertIn("resourceAnchors/{resourceAnchorName}", inspect.getsource(operation.url.fget))
